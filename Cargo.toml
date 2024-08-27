@@ -5,7 +5,7 @@ edition = "2021"
 authors = ["SeedyROM (Zack Kollar) <me@seedyrom.io>"]
 license = "GPL-3.0-or-later"
 homepage = "https://youtu.be/dQw4w9WgXcQ"
-description = "Integrate faust and nih_plug"
+description = "A simple plugin that processes audio using a Faust program called slapjack."
 
 [workspace]
 members = ["xtask"]

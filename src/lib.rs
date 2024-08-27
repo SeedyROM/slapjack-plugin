@@ -58,21 +58,17 @@ impl Plugin for FaustIntegration {
     const VERSION: &'static str = env!("CARGO_PKG_VERSION");
 
     const AUDIO_IO_LAYOUTS: &'static [AudioIOLayout] = &[
-        // Mono
-        AudioIOLayout {
-            main_input_channels: NonZeroU32::new(1),
-            main_output_channels: NonZeroU32::new(1),
-            aux_input_ports: &[],
-            aux_output_ports: &[],
-            names: PortNames::const_default(),
-        },
         // Stereo
         AudioIOLayout {
             main_input_channels: NonZeroU32::new(2),
             main_output_channels: NonZeroU32::new(2),
-            aux_input_ports: &[],
-            aux_output_ports: &[],
-            names: PortNames::const_default(),
+            ..AudioIOLayout::const_default()
+        },
+        // Mono
+        AudioIOLayout {
+            main_input_channels: NonZeroU32::new(1),
+            main_output_channels: NonZeroU32::new(1),
+            ..AudioIOLayout::const_default()
         },
     ];
 
@@ -100,10 +96,10 @@ impl Plugin for FaustIntegration {
     }
 
     fn reset(&mut self) {
-        // On reset we need to reinitialize the DSP and state
-        let (dsp, state) = DspHandle::<Slapjack>::new();
-        self.dsp = dsp;
-        self.state = state;
+        // // On reset we need to reinitialize the DSP and state
+        // let (dsp, state) = DspHandle::<Slapjack>::new();
+        // self.dsp = dsp;
+        // self.state = state;
     }
 
     fn process(
@@ -135,7 +131,7 @@ impl Plugin for FaustIntegration {
 impl ClapPlugin for FaustIntegration {
     const CLAP_ID: &'static str = "com.seedyrom.slapjack";
     const CLAP_DESCRIPTION: Option<&'static str> =
-        Some("A simple plugin that processes audio using a Faust program called slapjack, which is mean to be a multi-effect chain.");
+        Some("A simple plugin that processes audio using a Faust program called slapjack.");
     const CLAP_MANUAL_URL: Option<&'static str> = Some(Self::URL);
     const CLAP_SUPPORT_URL: Option<&'static str> = None;
 
@@ -153,8 +149,14 @@ impl Vst3Plugin for FaustIntegration {
     const VST3_CLASS_ID: [u8; 16] = *b"SeedyROMSlapjack";
 
     // And also don't forget to change these categories
-    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] =
-        &[Vst3SubCategory::Fx, Vst3SubCategory::Custom("Fuckery")];
+    const VST3_SUBCATEGORIES: &'static [Vst3SubCategory] = &[
+        Vst3SubCategory::Fx,
+        Vst3SubCategory::Custom("Fuckery"),
+        Vst3SubCategory::Modulation,
+        Vst3SubCategory::Dynamics,
+        Vst3SubCategory::Reverb,
+        Vst3SubCategory::Delay,
+    ];
 }
 
 nih_export_clap!(FaustIntegration);
